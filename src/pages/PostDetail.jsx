@@ -1,0 +1,125 @@
+import { useEffect, useMemo } from 'react'
+import { useNavigate, useParams, useOutletContext } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
+import Outline from '../components/Outline'
+import Pill from '../components/Pill'
+import slugify from '../utils/slugify'
+
+const buildOutline = (content) => {
+  if (!content) return []
+  return content
+    .split('\n')
+    .map((line) => line.match(/^(#{1,3})\s+(.*)$/))
+    .filter(Boolean)
+    .map(([, hashes, text]) => ({
+      level: hashes.length,
+      text: text.trim(),
+      id: slugify(text),
+    }))
+}
+
+const PostDetail = () => {
+  const navigate = useNavigate()
+  const { postId } = useParams()
+  const { posts } = useOutletContext()
+  const post = useMemo(() => posts.find((p) => p.id === postId), [posts, postId])
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [postId])
+
+  if (!post) {
+    return (
+      <div className="p-1 sm:p-2">
+        <p className="text-sm text-muted">Post not found.</p>
+        <button className="underline mt-2" onClick={() => navigate('/posts')}>
+          Back to posts
+        </button>
+      </div>
+    )
+  }
+
+  const headings = buildOutline(post.content || post.excerpt)
+
+  return (
+    <div className="grid lg:grid-cols-[minmax(0,2.5fr)_1fr] gap-8 lg:gap-12">
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
+          <button className="underline underline-offset-2 hover:text-accent" onClick={() => navigate('/posts')}>
+            Back to posts
+          </button>
+          <span aria-hidden="true">•</span>
+          <span className="font-mono text-ink">{post.date}</span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-semibold text-ink mt-2">{post.title}</h1>
+        <div className="flex flex-wrap gap-2">
+          {post.tags.map((tag) => (
+            <Pill key={tag}>{tag}</Pill>
+          ))}
+        </div>
+        <div className="markdown text-base leading-7">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeHighlight]}
+            components={{
+              h1: ({ node, children, ...rest }) => {
+                const text =
+                  node?.children?.map((child) => child.value || '').join(' ') ||
+                  children?.[0] ||
+                  ''
+                const id = slugify(text)
+                return (
+                  <h1 id={id} {...rest}>
+                    {children}
+                  </h1>
+                )
+              },
+              h2: ({ node, children, ...rest }) => {
+                const text =
+                  node?.children?.map((child) => child.value || '').join(' ') ||
+                  children?.[0] ||
+                  ''
+                const id = slugify(text)
+                return (
+                  <h2 id={id} {...rest}>
+                    {children}
+                  </h2>
+                )
+              },
+              h3: ({ node, children, ...rest }) => {
+                const text =
+                  node?.children?.map((child) => child.value || '').join(' ') ||
+                  children?.[0] ||
+                  ''
+                const id = slugify(text)
+                return (
+                  <h3 id={id} {...rest}>
+                    {children}
+                  </h3>
+                )
+              },
+              img: ({ node, ...props }) => {
+                const alt = node?.properties?.alt || ''
+                return (
+                  <figure className="my-6 space-y-2">
+                    <img {...props} alt={alt} className="w-full rounded-lg" />
+                    {alt ? <figcaption className="text-sm text-muted italic text-center">{alt}</figcaption> : null}
+                  </figure>
+                )
+              },
+            }}
+          >
+            {post.content || post.excerpt}
+          </ReactMarkdown>
+        </div>
+      </div>
+      <aside className="hidden lg:block sticky top-16 self-start">
+        <Outline headings={headings} />
+      </aside>
+    </div>
+  )
+}
+
+export default PostDetail
