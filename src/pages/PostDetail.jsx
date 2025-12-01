@@ -44,81 +44,92 @@ const PostDetail = () => {
   const headings = buildOutline(post.content || post.excerpt)
 
   return (
-    <div className="grid lg:grid-cols-[minmax(0,2.5fr)_1fr] gap-8 lg:gap-12">
-      <div className="space-y-4">
-        <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
-          <button className="underline underline-offset-2 hover:text-accent" onClick={() => navigate('/posts')}>
-            Back to posts
-          </button>
-          <span aria-hidden="true">•</span>
-          <span className="font-mono text-ink">{post.date}</span>
+    <>
+      <div className="grid lg:grid-cols-[minmax(0,2.5fr)_1fr] gap-8 lg:gap-12">
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
+            <button className="underline underline-offset-2 hover:text-accent" onClick={() => navigate('/posts')}>
+              Back to posts
+            </button>
+            <span aria-hidden="true">•</span>
+            <span className="font-mono text-ink">{post.date}</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-semibold text-ink mt-2">{post.title}</h1>
+          <div className="flex flex-wrap gap-2">
+            {post.tags.map((tag) => (
+              <Pill key={tag}>{tag}</Pill>
+            ))}
+          </div>
+          <div className="markdown text-base leading-7">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
+              components={{
+                h1: ({ node, children, ...rest }) => {
+                  const text =
+                    node?.children?.map((child) => child.value || '').join(' ') ||
+                    children?.[0] ||
+                    ''
+                  const id = slugify(text)
+                  return (
+                    <h1 id={id} {...rest}>
+                      {children}
+                    </h1>
+                  )
+                },
+                h2: ({ node, children, ...rest }) => {
+                  const text =
+                    node?.children?.map((child) => child.value || '').join(' ') ||
+                    children?.[0] ||
+                    ''
+                  const id = slugify(text)
+                  return (
+                    <h2 id={id} {...rest}>
+                      {children}
+                    </h2>
+                  )
+                },
+                h3: ({ node, children, ...rest }) => {
+                  const text =
+                    node?.children?.map((child) => child.value || '').join(' ') ||
+                    children?.[0] ||
+                    ''
+                  const id = slugify(text)
+                  return (
+                    <h3 id={id} {...rest}>
+                      {children}
+                    </h3>
+                  )
+                },
+                img: ({ node, ...props }) => {
+                  const alt = node?.properties?.alt || ''
+                  return (
+                    <figure className="my-6 space-y-2">
+                      <img {...props} alt={alt} className="w-full rounded-lg" />
+                      {alt ? <figcaption className="text-sm text-muted italic text-center">{alt}</figcaption> : null}
+                    </figure>
+                  )
+                },
+              }}
+            >
+              {post.content || post.excerpt}
+            </ReactMarkdown>
+          </div>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-semibold text-ink mt-2">{post.title}</h1>
-        <div className="flex flex-wrap gap-2">
-          {post.tags.map((tag) => (
-            <Pill key={tag}>{tag}</Pill>
-          ))}
-        </div>
-        <div className="markdown text-base leading-7">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeHighlight]}
-            components={{
-              h1: ({ node, children, ...rest }) => {
-                const text =
-                  node?.children?.map((child) => child.value || '').join(' ') ||
-                  children?.[0] ||
-                  ''
-                const id = slugify(text)
-                return (
-                  <h1 id={id} {...rest}>
-                    {children}
-                  </h1>
-                )
-              },
-              h2: ({ node, children, ...rest }) => {
-                const text =
-                  node?.children?.map((child) => child.value || '').join(' ') ||
-                  children?.[0] ||
-                  ''
-                const id = slugify(text)
-                return (
-                  <h2 id={id} {...rest}>
-                    {children}
-                  </h2>
-                )
-              },
-              h3: ({ node, children, ...rest }) => {
-                const text =
-                  node?.children?.map((child) => child.value || '').join(' ') ||
-                  children?.[0] ||
-                  ''
-                const id = slugify(text)
-                return (
-                  <h3 id={id} {...rest}>
-                    {children}
-                  </h3>
-                )
-              },
-              img: ({ node, ...props }) => {
-                const alt = node?.properties?.alt || ''
-                return (
-                  <figure className="my-6 space-y-2">
-                    <img {...props} alt={alt} className="w-full rounded-lg" />
-                    {alt ? <figcaption className="text-sm text-muted italic text-center">{alt}</figcaption> : null}
-                  </figure>
-                )
-              },
-            }}
-          >
-            {post.content || post.excerpt}
-          </ReactMarkdown>
-        </div>
+        <aside className="hidden lg:block sticky top-16 self-start">
+          <Outline headings={headings} />
+        </aside>
       </div>
-      <aside className="hidden lg:block sticky top-16 self-start">
-        <Outline headings={headings} />
-      </aside>
-    </div>
+
+      <button
+        type="button"
+        className="fixed bottom-4 right-4 lg:right-80 md:bottom-8 inline-flex items-center gap-2 rounded-full border border-border bg-white/90 backdrop-blur px-3 py-2 text-sm text-ink shadow-soft hover:border-accent hover:text-accent transition-colors duration-150"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        aria-label="返回顶部"
+      >
+        ↑ 返回顶部
+      </button>
+    </>
   )
 }
 
