@@ -6,7 +6,7 @@ tags:
   - 技术
 category: posts
 ---
-
+> 原文发布在我的[英文博客](https://jamesliu.space/posts/ms-intern-summary/)，本篇由gemini 3.0翻译为中文
 
 ## 项目背景
 

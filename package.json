@@ -6,10 +6,12 @@
   "scripts": {
     "predev": "npm run import-md",
     "dev": "vite",
+    "prebuild": "npm run import-md && npm run sitemap",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "import-md": "node scripts/import-md.mjs"
+    "import-md": "node scripts/import-md.mjs",
+    "sitemap": "SITE_URL=$SITE_URL node scripts/generate-sitemap.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
