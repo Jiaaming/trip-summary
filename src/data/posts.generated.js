@@ -2,18 +2,6 @@
 
 export const posts = [
   {
-    "id": "2025-summary",
-    "title": "2025年度总结",
-    "date": "2025.12.31",
-    "tags": [
-      "年度总结"
-    ],
-    "category": "posts",
-    "featured": false,
-    "excerpt": "",
-    "content": ""
-  },
-  {
     "id": "mex-1",
     "title": "拉美游记（二）：初探墨西哥城",
     "date": "2025.11.14",
