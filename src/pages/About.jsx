@@ -20,7 +20,20 @@ const About = () => (
         />
       </div>
       <div className="markdown text-base leading-7">
-        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeHighlight]}
+          components={{
+            a: ({ children, ...props }) => {
+              // 让所有链接在新标签页打开
+              return (
+                <a {...props} target="_blank" rel="noopener noreferrer">
+                  {children}
+                </a>
+              )
+            },
+          }}
+        >
           {aboutContent}
         </ReactMarkdown>
       </div>

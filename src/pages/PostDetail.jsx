@@ -123,6 +123,14 @@ const PostDetail = () => {
                     </h3>
                   )
                 },
+                a: ({ children, ...props }) => {
+                  // 让所有链接在新标签页打开
+                  return (
+                    <a {...props} target="_blank" rel="noopener noreferrer">
+                      {children}
+                    </a>
+                  )
+                },
                 img: ({ node, ...props }) => {
                   const alt = node?.properties?.alt || ''
                   return (
