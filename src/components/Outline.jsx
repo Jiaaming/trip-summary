@@ -3,12 +3,16 @@ const Outline = ({ headings }) => {
 
   const handleClick = (event, id) => {
     event.preventDefault()
+
+    const currentHash = window.location.hash 
+    const pathWithoutAnchor = currentHash.split('#').slice(0, 2).join('#') 
+
+    const newHash = `${pathWithoutAnchor}#${id}`
+    window.history.replaceState(null, '', newHash)
+
     const target = document.getElementById(id)
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      // update hash to reflect heading without breaking HashRouter route
-      const base = window.location.hash.replace(/^#/, '').split('#')[0] || ''
-      window.location.hash = `${base}#${id}`
     }
   }
 

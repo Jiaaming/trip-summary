@@ -27,7 +27,29 @@ const PostDetail = () => {
   const post = useMemo(() => posts.find((p) => p.id === postId), [posts, postId])
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+
+    const fullHash = window.location.hash 
+    const hashParts = fullHash.split('#') 
+
+    // hashParts[0] = ""
+    // hashParts[1] = "/posts/2023-summary"
+    // hashParts[2] = "header" 
+
+    const anchorHash = hashParts.length > 2 ? hashParts[2] : null
+
+    if (anchorHash) {
+
+      setTimeout(() => {
+        const element = document.getElementById(decodeURIComponent(anchorHash))
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+      }, 100)
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }, [postId])
 
   if (!post) {
