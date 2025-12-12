@@ -6,6 +6,9 @@ const Outline = ({ headings }) => {
     const target = document.getElementById(id)
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      // update hash to reflect heading without breaking HashRouter route
+      const base = window.location.hash.replace(/^#/, '').split('#')[0] || ''
+      window.location.hash = `${base}#${id}`
     }
   }
 
