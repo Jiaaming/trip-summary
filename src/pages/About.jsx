@@ -32,6 +32,15 @@ const About = () => (
                 </a>
               )
             },
+            ul: ({ children }) => {
+              return <ul className="list-disc list-outside ml-6 space-y-2">{children}</ul>
+            },
+            ol: ({ children }) => {
+              return <ol className="list-decimal list-outside ml-6 space-y-2">{children}</ol>
+            },
+            li: ({ children }) => {
+              return <li className="text-ink">{children}</li>
+            },
           }}
         >
           {aboutContent}

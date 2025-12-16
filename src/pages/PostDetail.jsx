@@ -67,21 +67,29 @@ const PostDetail = () => {
 
   return (
     <>
-      <div className="grid lg:grid-cols-[minmax(0,2.5fr)_1fr] gap-8 lg:gap-12">
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
+          <button className="underline underline-offset-2 hover:text-accent" onClick={() => navigate('/posts')}>
+            Back to posts
+          </button>
+          <span aria-hidden="true">•</span>
+          <span className="font-mono text-ink">{post.date}</span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-semibold text-ink mt-2">{post.title}</h1>
+        <div className="flex flex-wrap gap-2">
+          {post.tags.map((tag) => (
+            <Pill key={tag}>{tag}</Pill>
+          ))}
+        </div>
+
+        {/* Outline 在移动端显示在顶部 */}
+        <div className="lg:hidden">
+          <Outline headings={headings} />
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-[minmax(0,2.5fr)_1fr] gap-8 lg:gap-12 mt-4">
         <div className="space-y-4">
-          <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
-            <button className="underline underline-offset-2 hover:text-accent" onClick={() => navigate('/posts')}>
-              Back to posts
-            </button>
-            <span aria-hidden="true">•</span>
-            <span className="font-mono text-ink">{post.date}</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-ink mt-2">{post.title}</h1>
-          <div className="flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <Pill key={tag}>{tag}</Pill>
-            ))}
-          </div>
           <div className="markdown text-base leading-7">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
@@ -130,6 +138,15 @@ const PostDetail = () => {
                       {children}
                     </a>
                   )
+                },
+                ul: ({ children }) => {
+                  return <ul className="list-disc list-outside ml-6 space-y-2">{children}</ul>
+                },
+                ol: ({ children }) => {
+                  return <ol className="list-decimal list-outside ml-6 space-y-2">{children}</ol>
+                },
+                li: ({ children }) => {
+                  return <li className="text-ink">{children}</li>
                 },
                 img: ({ node, ...props }) => {
                   const alt = node?.properties?.alt || ''
